@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planilla de Sueldos</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times;
+            margin: 30px;
+            background-color: lightblue;
+            color: rgb(2, 2, 104);
+            text-align: left;
+        }
+        h2 {
+            color: black;
+        }
+        form {
+            background: rgb(229, 247, 194);
+            padding: 20px;
+            margin: 20px auto;
+            width: 50%;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        input, button {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            background-color: green;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #005fa3;
+        }
+        table {
+            width: 90%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            background: white;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+        th {
+            background-color: blue;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h2><center> Planilla de Sueldos </center></h2>
+    <form id="salarioForm">
+        <label>Nombre: <input type="text" id="nombre" required></label>
+        <label>Apellido: <input type="text" id="apellido" required></label>
+        <label>Cargo: <input type="text" id="cargo" required></label>
+        <label>Sueldo: <input type="number" id="sueldo" required></label>
+        <button type="button" onclick="calcularSalario()">Calcular</button>
+        <button type="button" onclick="limpiarCampos()">Limpiar</button>
+    </form>
+    <table>
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Cargo</th>
+                <th>Sueldo</th>
+                <th>AFP (Empleado)</th>
+                <th>ISSS (Empleado)</th>
+                <th>Renta Imponible</th>
+                <th>ISR</th>
+                <th>Salario Líquido</th>
+                <th>AFP (Patrono)</th>
+                <th>ISSS (Patrono)</th>
+                <th>Total AFP</th>
+                <th>Total ISSS</th>
+            </tr>
+        </thead>
+        <tbody id="resultado"></tbody>
+    </table>
+    <script>
+        function calcularSalario() {
+            const nombre = document.getElementById("nombre").value;
+            const apellido = document.getElementById("apellido").value;
+            const cargo = document.getElementById("cargo").value;
+            const sueldo = parseFloat(document.getElementById("sueldo").value);
+            
+            if (isNaN(sueldo) || sueldo <= 0) {
+                alert("Ingrese un sueldo válido");
+                return;
+            }
+            
+            const afpEmpleado = sueldo * 0.0725;
+            const isssEmpleado = Math.min(sueldo * 0.03, 30);
+            const rentaImponible = sueldo - afpEmpleado - isssEmpleado;
+            let isr = calcularISR(rentaImponible);
+            let salarioLiquido = rentaImponible - isr;
+            
+            const afpPatrono = sueldo * 0.0875;
+            const isssPatrono = sueldo * 0.075;
+            
+            const totalAFP = afpEmpleado + afpPatrono;
+            const totalISSS = isssEmpleado + isssPatrono;
+            
+            document.getElementById("resultado").innerHTML += `
+                <tr>
+                    <td>${nombre}</td>
+                    <td>${apellido}</td>
+                    <td>${cargo}</td>
+                    <td>${sueldo.toFixed(2)}</td>
+                    <td>${afpEmpleado.toFixed(2)}</td>
+                    <td>${isssEmpleado.toFixed(2)}</td>
+                    <td>${rentaImponible.toFixed(2)}</td>
+                    <td>${isr > 0 ? isr.toFixed(2) : "SIN RETENCIÓN"}</td>
+                    <td>${salarioLiquido.toFixed(2)}</td>
+                    <td>${afpPatrono.toFixed(2)}</td>
+                    <td>${isssPatrono.toFixed(2)}</td>
+                    <td>${totalAFP.toFixed(2)}</td>
+                    <td>${totalISSS.toFixed(2)}</td>
+                </tr>
+            `;
+        }
+        function calcularISR(rentaImponible) {
+            if (rentaImponible <= 472) return 0;
+            if (rentaImponible > 472 && rentaImponible <= 895.24) {
+                return (rentaImponible - 472) * 0.1 + 17.67;
+            } else if (rentaImponible > 895.24 && rentaImponible <= 2038.10) {
+                return ((rentaImponible - 895.24) * 0.20) + 60.00;
+            } else {
+                return ((rentaImponible - 2038.10) * 0.30) + 288.57;
+            }
+        }
+        
+        function limpiarCampos() {
+            document.getElementById("nombre").value = "";
+            document.getElementById("apellido").value = "";
+            document.getElementById("cargo").value = "";
+            document.getElementById("sueldo").value = "";
+        }
+    </script>
+</body>
+</html>
