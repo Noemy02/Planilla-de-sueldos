@@ -109,23 +109,24 @@
             const isssPatrono = sueldo * 0.075;
             
             const totalAFP = afpEmpleado + afpPatrono;
-            const totalISSS = isssEmpleado + isssPatrono;
+            const totalISSS = Math.min(sueldo * 0.075, 75);
+
             
             document.getElementById("resultado").innerHTML += `
                 <tr>
                     <td>${nombre}</td>
                     <td>${apellido}</td>
                     <td>${cargo}</td>
-                    <td>${sueldo.toFixed(2)}</td>
-                    <td>${afpEmpleado.toFixed(2)}</td>
-                    <td>${isssEmpleado.toFixed(2)}</td>
-                    <td>${rentaImponible.toFixed(2)}</td>
-                    <td>${isr > 0 ? isr.toFixed(2) : "SIN RETENCIÓN"}</td>
-                    <td>${salarioLiquido.toFixed(2)}</td>
-                    <td>${afpPatrono.toFixed(2)}</td>
-                    <td>${isssPatrono.toFixed(2)}</td>
-                    <td>${totalAFP.toFixed(2)}</td>
-                    <td>${totalISSS.toFixed(2)}</td>
+                    <td>$${sueldo.toFixed(2)}</td>
+                    <td>$${afpEmpleado.toFixed(2)}</td>
+                    <td>$${isssEmpleado.toFixed(2)}</td>
+                    <td>$${rentaImponible.toFixed(2)}</td>
+                    <td>${isr > 0 ? `$${isr.toFixed(2)}` : "SIN RETENCIÓN"}</td>
+                    <td>$${salarioLiquido.toFixed(2)}</td>
+                    <td>$${afpPatrono.toFixed(2)}</td>
+                    <td>$${isssPatrono.toFixed(2)}</td>
+                    <td>$${totalAFP.toFixed(2)}</td>
+                    <td>$${totalISSS.toFixed(2)}</td>
                 </tr>
             `;
         }
